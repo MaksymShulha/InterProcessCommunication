@@ -3,16 +3,19 @@ global.api = api;
 api.net = require('net');
 
 var socket = new api.net.Socket();
-var user;
+var arr;
+var result = [];
 
 socket.connect({
   port: 2000,
   host: '127.0.0.1',
 }, function() {
-  socket.write('Hello from client');
-  socket.on('data', function(data) {
-    user = JSON.parse(data);
-    console.log('Data received (by client): ' + data);
-    console.log('Age of ' + user.name + ' is ' + user.age);
-  });
+    socket.write(JSON.stringify('Hello from client'));
+    socket.on('data', function(data) {
+        arr = JSON.parse(data);
+        console.log('Data received (by client): ' + data);
+        arr.forEach(function (item) { result.push(item * 2); });
+        console.log('Result array: ' + result);
+        socket.write(JSON.stringify(result));
+    });
 });
